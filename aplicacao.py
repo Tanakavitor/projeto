@@ -13,6 +13,7 @@
 from enlace import *
 import time
 import numpy as np
+import random
 
 # voce deverá descomentar e configurar a porta com através da qual ira fazer comunicaçao
 #   para saber a sua porta, execute no terminal :
@@ -37,9 +38,27 @@ def main():
         com1.enable()
         #Se chegamos até aqui, a comunicação foi aberta com sucesso. Faça um print para informar.
         print("Abriu a comunicação")
-        imageW = "download (1).jpeg"
-        imageR = "download (2).jpeg"
-        print("imagem para enviar: {}".format(imageW))        
+        comandos =[
+            b'\x00\x00\x00\x00',
+            b'\x00\x00\xFF\x00',
+            b'\xFF\x00\x00',
+            b'\x00\xFF\x00',
+            b'\x00\x00\xFF',
+            b'\x00\xFF',
+            b'\xFF\x00',
+            b'\x00',
+            b'\xFF'
+        ] 
+        
+        numero = random.randint(10,30)
+        a = 0
+        lista = []
+
+        while a <= numero:
+            q = random.randint(0,8)
+            lista.append(comandos(q))
+            a +=1
+            
            
                   
         #aqui você deverá gerar os dados a serem transmitidos. 
@@ -48,7 +67,7 @@ def main():
         
         #txBuffer = imagem em bytes!
         #txBuffer = b'\x12\x13\xAA'  #isso é um array de bytes
-        txBuffer = open(imageW, 'rb').read()
+        txBuffer = lista
         print("meu array de bytes tem tamanho {}" .format(len(txBuffer)))
         #faça aqui uma conferência do tamanho do seu txBuffer, ou seja, quantos bytes serão enviados.
        
@@ -61,8 +80,8 @@ def main():
 
                
 
-
-        com1.sendData(np.asarray(txBuffer))  #as array apenas como boa pratica para casos de ter uma outra forma de dados
+        for i in range(len(lista)):
+            com1.sendData(np.asarray(txBuffer[i]))  #as array apenas como boa pratica para casos de ter uma outra forma de dados
           
         # A camada enlace possui uma camada inferior, TX possui um método para conhecermos o status da transmissão
         # O método não deve estar fincionando quando usado como abaixo. deve estar retornando zero. Tente entender como esse método funciona e faça-o funcionar.
@@ -79,12 +98,12 @@ def main():
         #Veja o que faz a funcao do enlaceRX  getBufferLen
       
         #acesso aos bytes recebidos
-        txLen = len(txBuffer)
-        rxBuffer, nRx = com1.getData(txLen)
-        print("recebeu {} bytes" .format(len(rxBuffer)))
-        f = open(imageR, 'wb')
-        f.write(rxBuffer)
-        f.close()
+        #txLen = len(txBuffer)
+        #rxBuffer, nRx = com1.getData(txLen)
+        #print("recebeu {} bytes" .format(len(rxBuffer)))
+        #f = open(imageR, 'wb')
+        #f.write(rxBuffer)
+        #f.close()
         """
         for i in range(len(rxBuffer)):
             print("recebeu {}" .format(rxBuffer[i]))
