@@ -1,23 +1,57 @@
+from enlace import *
+import time
+import numpy as np
 import random
-numero = random.randint(10, 30)
-comando_1 = 0x00000000
-comando2 = 0x0000FF00
-comando_3 = 0xFF0000
-comando_4 = 0x00FF00
-comando_5 = 0x0000FF
-comando_6 = 0x00FF
-comando_7 = 0xFF00
-comando_8 = 0x00
-comando_9 = 0xFF
-#Coloque tudo em uma lista
-comandos = [comando_1,comando2,comando_3,comando_4,comando_5,comando_6,comando_7,comando_8,comando_9]
-nova_lista = []
-for i in range(numero):
-    novo_numero = random.randint(0, 8)
-    nova_lista.append(comandos[novo_numero])
-    
-nova_lista2 = []
-for i in range(numero):
-    nova_lista2.append(hex(nova_lista[i]))
-print(nova_lista2)
 
+serialName = "COM4"  # Defina a porta serial corretamente
+
+def main():
+    try:
+        print("Iniciou o main")
+        com1 = enlace(serialName)
+        com1.enable()
+        print("esperando 1 byte de sacrifício") 
+        rxBuffer, nRx = com1.getData(1)
+        com1.rx.clearBuffer()
+        time.sleep(.1)
+
+
+        # Gerar os dados a serem transmitidos (txBuffer)
+        # txBuffer = b'\x12\x13\xAA'  # Exemplo de dados a serem transmitidos
+
+        # Calcular o tamanho dos dados a serem enviados
+        # txLen = len(txBuffer)
+        # print("Tamanho dos dados a serem enviados:", txLen)
+
+        # Transmitir os dados
+        # print("Iniciando transmissão...")
+        # com1.sendData(txBuffer)
+        # print("Transmissão concluída!")
+
+        # A recepção de dados acontece automaticamente em um thread separado no enlace
+
+        # Receber os dados
+        print("Aguardando recebimento de dados...")
+        rxBuffer, nRx = com1.getData(10)  # Defina o tamanho esperado dos dados recebidos
+        print("Recebeu {} bytes".format(nRx))
+
+        # Salvar os dados recebidos em um arquivo
+        # with open("received_data.bin", "wb") as f:
+        #     f.write(rxBuffer)
+        # print("Dados recebidos salvos com sucesso!")
+
+        # Exibir os dados recebidos
+        print("Dados recebidos:", rxBuffer)
+
+        print("-------------------------")
+        print("Comunicação encerrada")
+        print("-------------------------")
+        com1.disable()
+        
+    except Exception as erro:
+        print("ops! :-\\")
+        print(erro)
+        com1.disable()
+
+if __name__ == "__main__":
+    main()
