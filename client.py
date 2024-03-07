@@ -32,7 +32,8 @@ def main():
 
         # Receber os dados
         print("Aguardando recebimento de dados...")
-        rxBuffer, nRx = com1.getData(10)  # Defina o tamanho esperado dos dados recebidos
+        
+        rxBuffer, nRx = com1.getData(50)  # Defina o tamanho esperado dos dados recebidos
         print("Recebeu {} bytes".format(nRx))
 
         # Salvar os dados recebidos em um arquivo
